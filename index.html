@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>爱的五种语言 · 互动测验</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        love: { 50:'#fff5f6', 100:'#ffe0e4', 200:'#ffc2c9', 300:'#ff939e', 400:'#ff5e70', 500:'#e94d5f', 600:'#c93a4b', 700:'#a62d3d', 800:'#8a2735', 900:'#722533' },
+        gold: { 50:'#fef9ef', 100:'#fdf0d5', 200:'#faddaa', 300:'#f5c675', 400:'#efa83e', 500:'#e79217', 600:'#cc760d', 700:'#a55c0e', 800:'#854914', 900:'#6e3c12' },
+        warm: { 50:'#fdf8f6', 100:'#f9ede7', 200:'#f2d9cd', 300:'#e7bda8', 400:'#d99778', 500:'#c87554', 600:'#b45d40', 700:'#964a33', 800:'#7d3f2d', 900:'#683628' },
+      },
+      fontFamily: { sans: ['"SF Pro Display"','"PingFang SC"','"Noto Sans SC"','"Helvetica Neue"','Arial','sans-serif'] }
+    }
+  }
+}
+</script>
+<style>
+  .quiz-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+  .option-btn { transition: all 0.2s ease; }
+  .option-btn:hover { transform: translateX(6px); }
+  .option-btn.selected { border-color: #e94d5f; background: #fff5f6; box-shadow: 0 0 0 3px rgba(233,77,95,0.15); }
+  .bar-fill { transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+  .fade-in { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .slide-up { animation: slideUp 0.6s cubic-bezier(0.23,1,0.32,1); }
+  @keyframes slideUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+  .heart-beat { animation: heartBeat 1.2s ease-in-out infinite; }
+  @keyframes heartBeat { 0%,100% { transform:scale(1); } 14% { transform:scale(1.12); } 28% { transform:scale(1); } 42% { transform:scale(1.12); } 56% { transform:scale(1); } }
+  .confetti { position:fixed; pointer-events:none; animation:confettiFall 2s ease-out forwards; }
+  @keyframes confettiFall { 0% { opacity:1; transform:translateY(-100px) rotate(0deg); } 100% { opacity:0; transform:translateY(100vh) rotate(720deg); } }
+  body { background: linear-gradient(135deg, #fdf2f4 0%, #fef9ef 30%, #fdf8f6 60%, #fdf2f4 100%); background-attachment: fixed; }
+</style>
+</head>
+<body class="min-h-screen font-sans antialiased text-gray-800">
+
+<!-- ===== INTRO PAGE ===== -->
+<section id="introPage" class="min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="max-w-2xl w-full text-center">
+    <div class="heart-beat text-6xl mb-6">💝</div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-love-500 to-warm-500 bg-clip-text text-transparent">
+      爱的五种语言
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mb-2">互动测验 · 发现你的爱语</p>
+    <div class="w-20 h-1 bg-gradient-to-r from-love-400 to-gold-400 mx-auto my-6 rounded-full"></div>
+    <p class="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+      基于 Gary Chapman 博士经典理论。共 <strong>30 组</strong>题目，每组选择最贴近你的描述。<br>约需 5-8 分钟完成。
+    </p>
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
+      <span class="px-3 py-1.5 bg-love-50 text-love-600 rounded-full text-sm font-medium">💬 肯定的言语</span>
+      <span class="px-3 py-1.5 bg-gold-50 text-gold-700 rounded-full text-sm font-medium">⏰ 精心的时刻</span>
+      <span class="px-3 py-1.5 bg-warm-50 text-warm-600 rounded-full text-sm font-medium">🎁 接受礼物</span>
+      <span class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium">🛠️ 服务的行动</span>
+      <span class="px-3 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">🤗 身体的接触</span>
+    </div>
+    <button onclick="startQuiz()" class="px-10 py-4 bg-gradient-to-r from-love-500 to-love-600 text-white text-lg font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:shadow-love-300 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+      开始测验 ✨
+    </button>
+  </div>
+</section>
+
+<!-- ===== QUIZ PAGE ===== -->
+<section id="quizPage" class="hidden min-h-screen">
+  <div class="max-w-2xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-2">
+      <button onclick="prevQuestion()" id="prevBtn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm hover:shadow-md transition-all text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed">←</button>
+      <div class="text-sm font-medium text-gray-400"><span id="qNum">1</span> / 30</div>
+      <div class="w-10 h-10"></div>
+    </div>
+    <!-- Progress bar -->
+    <div class="w-full h-2 bg-gray-200 rounded-full mb-8 overflow-hidden">
+      <div id="progressBar" class="h-full bg-gradient-to-r from-love-400 to-love-500 rounded-full transition-all duration-500" style="width:3.3%"></div>
+    </div>
+    <!-- Question card -->
+    <div id="questionCard" class="quiz-card bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 md:p-8 mb-6 fade-in">
+      <div class="flex items-center gap-2 mb-6">
+        <span class="w-8 h-8 rounded-full bg-love-100 text-love-500 flex items-center justify-center text-sm font-bold" id="qBadge">1</span>
+        <span class="text-sm text-gray-400 font-medium">选择更贴近你的描述</span>
+      </div>
+      <div id="optionsContainer" class="space-y-4"></div>
+    </div>
+    <!-- Navigation -->
+    <div class="flex justify-end">
+      <button onclick="nextQuestion()" id="nextBtn" class="px-8 py-3 bg-gradient-to-r from-love-500 to-love-600 text-white font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:shadow-love-300 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none transition-all">
+        下一题 →
+      </button>
+      <button onclick="showResults()" id="submitBtn" class="hidden px-8 py-3 bg-gradient-to-r from-gold-400 to-gold-500 text-white font-semibold rounded-2xl shadow-lg shadow-gold-200 hover:shadow-xl hover:shadow-gold-300 hover:-translate-y-0.5 transition-all">
+        查看结果 🎉
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESULTS PAGE ===== -->
+<section id="resultsPage" class="hidden min-h-screen">
+  <div class="max-w-2xl mx-auto px-4 py-8">
+    <div class="text-center mb-10 slide-up">
+      <div class="text-5xl mb-4">💝</div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-2 text-gray-800">你的爱的语言</h2>
+      <p class="text-gray-500">以下是你的爱语分布</p>
+    </div>
+    
+    <!-- Score bars -->
+    <div id="scoreBars" class="space-y-5 mb-10 slide-up"></div>
+    
+    <!-- Interpretation -->
+    <div id="interpretation" class="bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 md:p-8 mb-6 slide-up"></div>
+    
+    <!-- Actions -->
+    <div class="flex flex-wrap gap-3 justify-center slide-up">
+      <button onclick="restartQuiz()" class="px-6 py-3 bg-love-50 text-love-600 font-semibold rounded-2xl hover:bg-love-100 transition-all">
+        🔄 重新测验
+      </button>
+      <button onclick="shareResults()" class="px-6 py-3 bg-white text-gray-600 font-semibold rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-200">
+        📋 复制结果
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+// ===== QUIZ DATA =====
+// Categories: W=Words, Q=QualityTime, G=Gifts, S=Service, P=PhysicalTouch
+const quizData = [
+  { a:"伴侣说\"我爱你\"", b:"伴侣给我一个拥抱", a_cat:"W", b_cat:"P" },
+  { a:"伴侣帮我做家务", b:"伴侣送我礼物", a_cat:"S", b_cat:"G" },
+  { a:"和伴侣一起散步", b:"伴侣搂着我的肩膀", a_cat:"Q", b_cat:"P" },
+  { a:"伴侣送我意想不到的礼物", b:"伴侣对我说鼓励的话", a_cat:"G", b_cat:"W" },
+  { a:"伴侣帮我按摩肩膀", b:"伴侣花时间陪我", a_cat:"P", b_cat:"Q" },
+  { a:"伴侣帮我处理琐事", b:"伴侣拉着我的手", a_cat:"S", b_cat:"P" },
+  { a:"伴侣送我一份特别的礼物", b:"伴侣对我说\"你真棒\"", a_cat:"G", b_cat:"W" },
+  { a:"和伴侣依偎在沙发上", b:"伴侣为我做一顿饭", a_cat:"P", b_cat:"S" },
+  { a:"伴侣写给我的情书", b:"伴侣计划一次约会", a_cat:"W", b_cat:"Q" },
+  { a:"伴侣帮我洗车或修东西", b:"伴侣送我花", a_cat:"S", b_cat:"G" },
+  { a:"伴侣专注地听我说话", b:"伴侣经常触碰我", a_cat:"Q", b_cat:"P" },
+  { a:"伴侣在朋友面前称赞我", b:"伴侣分担我的工作", a_cat:"W", b_cat:"S" },
+  { a:"伴侣精心挑选的礼物", b:"伴侣安排只有我们俩的时间", a_cat:"G", b_cat:"Q" },
+  { a:"伴侣给我一个长长的拥抱", b:"伴侣对我说感激的话", a_cat:"P", b_cat:"W" },
+  { a:"伴侣帮我完成一个项目", b:"伴侣陪我逛街或散步", a_cat:"S", b_cat:"Q" },
+  { a:"伴侣送我珠宝或饰品", b:"伴侣握着我的手", a_cat:"G", b_cat:"P" },
+  { a:"伴侣对我说\"我相信你\"", b:"伴侣帮我准备早餐", a_cat:"W", b_cat:"S" },
+  { a:"伴侣放下手机专注陪我", b:"伴侣给我一个吻", a_cat:"Q", b_cat:"P" },
+  { a:"伴侣送我实用的礼物", b:"伴侣说\"我需要你\"", a_cat:"G", b_cat:"W" },
+  { a:"伴侣修理家里的东西", b:"伴侣计划周末出游", a_cat:"S", b_cat:"Q" },
+  { a:"伴侣抚摸我的头发", b:"伴侣给我写一张便条", a_cat:"P", b_cat:"W" },
+  { a:"伴侣帮我跑腿办事", b:"伴侣送我惊喜蛋糕", a_cat:"S", b_cat:"G" },
+  { a:"和伴侣深入聊天", b:"伴侣从背后抱我", a_cat:"Q", b_cat:"P" },
+  { a:"伴侣当众表扬我", b:"伴侣帮我打扫房间", a_cat:"W", b_cat:"S" },
+  { a:"伴侣送我一直想要的东西", b:"伴侣陪我看电影", a_cat:"G", b_cat:"Q" },
+  { a:"伴侣坐得很近", b:"伴侣对我说\"谢谢你\"", a_cat:"P", b_cat:"W" },
+  { a:"伴侣主动帮助我", b:"伴侣用心安排纪念日", a_cat:"S", b_cat:"Q" },
+  { a:"伴侣出差带回礼物", b:"伴侣见面时拥抱我", a_cat:"G", b_cat:"P" },
+  { a:"伴侣说\"你很特别\"", b:"伴侣给我倒一杯水", a_cat:"W", b_cat:"S" },
+  { a:"伴侣和我一起做我喜欢的事", b:"伴侣送我一张卡片", a_cat:"Q", b_cat:"G" },
+];
+
+// Category info
+const categories = {
+  W: { name:"肯定的言语", icon:"💬", color:"love", desc:"你喜欢听到肯定、赞美和鼓励的话语。言语对你来说是爱的强有力表达——一句\"我爱你\"、一张便条、或真诚的称赞都能让你的心充满温暖。", tips:["多说\"我爱你\"和\"谢谢你\"","写便条、发甜蜜短信","在他人面前称赞对方","避免批评和讽刺"] },
+  Q: { name:"精心的时刻", icon:"⏰", color:"gold", desc:"你重视一起度过的专注时光。当你和伴侣全神贯注地相处——不被手机打扰的聊天、一起散步、或计划好的约会——你感受到深深的爱与连接。", tips:["放下手机，专注倾听","计划定期约会","一起散步或旅行","创造只属于两人的仪式"] },
+  G: { name:"接受礼物", icon:"🎁", color:"warm", desc:"礼物在你心中代表着爱与思念。重要的不是价格，而是那份心意——伴侣为你挑选礼物的用心，让你感受到被珍视。", tips:["不一定要贵重，重在心意","出差或逛街时想到对方","在特别的日子送礼物","亲手制作的礼物更珍贵"] },
+  S: { name:"服务的行动", icon:"🛠️", color:"blue", desc:"你从行动中感受爱。当伴侣帮你做家务、修东西、为你跑腿——这些实际的行动比千言万语更能表达爱。", tips:["主动分担家务","帮对方处理琐事","用行动代替说\"我爱你\"","发现对方需要并悄悄去做"] },
+  P: { name:"身体的接触", icon:"🤗", color:"purple", desc:"身体接触是你的主要爱语。拥抱、牵手、亲吻——这些肢体接触让你感到安全和被爱。", tips:["多拥抱、牵手、亲吻","散步时挽着手","坐在身边而非对面","按摩肩膀或背部"] },
+};
+
+// ===== STATE =====
+let currentQ = 0;
+let answers = new Array(30).fill(null);
+
+// ===== FUNCTIONS =====
+function startQuiz() {
+  document.getElementById('introPage').classList.add('hidden');
+  document.getElementById('quizPage').classList.remove('hidden');
+  document.getElementById('resultsPage').classList.add('hidden');
+  currentQ = 0;
+  answers = new Array(30).fill(null);
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderQuestion() {
+  const q = quizData[currentQ];
+  document.getElementById('qNum').textContent = currentQ + 1;
+  document.getElementById('qBadge').textContent = currentQ + 1;
+  document.getElementById('progressBar').style.width = ((currentQ + 1) / 30 * 100) + '%';
+  
+  document.getElementById('prevBtn').disabled = currentQ === 0;
+  
+  const container = document.getElementById('optionsContainer');
+  const sel = answers[currentQ];
+  
+  container.innerHTML = `
+    <button onclick="selectAnswer('a')" class="option-btn w-full text-left p-5 rounded-2xl border-2 border-gray-200 bg-white hover:border-love-300 ${sel==='a'?'selected':''}">
+      <div class="flex items-start gap-4">
+        <span class="flex-shrink-0 w-10 h-10 rounded-xl bg-love-50 text-love-500 flex items-center justify-center font-bold text-sm ${sel==='a'?'!bg-love-500 !text-white':''}">A</span>
+        <div>
+          <p class="text-gray-800 font-medium leading-relaxed">${q.a}</p>
+        </div>
+      </div>
+    </button>
+    <button onclick="selectAnswer('b')" class="option-btn w-full text-left p-5 rounded-2xl border-2 border-gray-200 bg-white hover:border-love-300 ${sel==='b'?'selected':''}">
+      <div class="flex items-start gap-4">
+        <span class="flex-shrink-0 w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center font-bold text-sm ${sel==='b'?'!bg-gold-500 !text-white':''}">B</span>
+        <div>
+          <p class="text-gray-800 font-medium leading-relaxed">${q.b}</p>
+        </div>
+      </div>
+    </button>
+  `;
+  
+  // Update nav buttons
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  if (currentQ === 29) {
+    nextBtn.classList.add('hidden');
+    submitBtn.classList.remove('hidden');
+  } else {
+    nextBtn.classList.remove('hidden');
+    submitBtn.classList.add('hidden');
+  }
+  
+  // Re-trigger fade animation
+  const card = document.getElementById('questionCard');
+  card.classList.remove('fade-in');
+  void card.offsetWidth;
+  card.classList.add('fade-in');
+}
+
+function selectAnswer(choice) {
+  answers[currentQ] = choice;
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (currentQ < 29) {
+    currentQ++;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  if (answers.includes(null)) {
+    const unanswered = answers.map((a,i) => a===null ? i+1 : null).filter(x => x);
+    alert(`还有 ${unanswered.length} 题未回答：第 ${unanswered.slice(0,5).join(', ')}${unanswered.length>5?'...':''} 题`);
+    return;
+  }
+  
+  // Calculate scores
+  const scores = { W:0, Q:0, G:0, S:0, P:0 };
+  for (let i = 0; i < 30; i++) {
+    const q = quizData[i];
+    const cat = answers[i] === 'a' ? q.a_cat : q.b_cat;
+    scores[cat]++;
+  }
+  
+  // Sort by score
+  const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+  const maxScore = sorted[0][1];
+  
+  // Show results page
+  document.getElementById('quizPage').classList.add('hidden');
+  document.getElementById('resultsPage').classList.remove('hidden');
+  
+  // Render bars
+  const barColors = {
+    W: 'from-red-400 to-red-300',
+    Q: 'from-amber-500 to-amber-400',
+    G: 'from-orange-500 to-orange-400',
+    S: 'from-blue-500 to-blue-400',
+    P: 'from-purple-500 to-purple-400',
+  };
+  const barBgs = {
+    W: 'bg-red-100',
+    Q: 'bg-amber-100',
+    G: 'bg-orange-100',
+    S: 'bg-blue-100',
+    P: 'bg-purple-100',
+  };
+  
+  let barsHTML = '';
+  sorted.forEach(([cat, score]) => {
+    const pct = Math.round(score / 30 * 100);
+    const info = categories[cat];
+    const isTop = score === maxScore;
+    barsHTML += `
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-semibold text-gray-700">${info.icon} ${info.name} ${isTop ? '👑' : ''}</span>
+          <span class="text-sm font-bold text-gray-500">${score} / 30</span>
+        </div>
+        <div class="w-full h-3 rounded-full ${barBgs[cat]} overflow-hidden">
+          <div class="bar-fill h-full rounded-full bg-gradient-to-r ${barColors[cat]}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('scoreBars').innerHTML = barsHTML;
+  
+  // Trigger bar animations after render
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0%';
+      void bar.offsetWidth;
+      bar.style.width = w;
+    });
+  }, 100);
+  
+  // Top love languages
+  const top = sorted.filter(([,s]) => s === maxScore);
+  const topInfo = categories[top[0][0]];
+  const topNames = top.map(([c]) => categories[c].name).join(' 和 ');
+  
+  // Interpretation
+  let interpHTML = `
+    <h3 class="text-xl font-bold mb-4">📖 你的主要爱语：${topNames}</h3>
+    <p class="text-gray-600 leading-relaxed mb-4">${topInfo.desc}</p>
+    <div class="bg-${topInfo.color}-50 rounded-2xl p-5 mt-4">
+      <p class="font-semibold text-gray-700 mb-2">💡 给伴侣的建议：</p>
+      <ul class="space-y-2">
+        ${topInfo.tips.map(t => `<li class="flex items-start gap-2 text-gray-600"><span class="text-${topInfo.color}-500 mt-0.5">✦</span>${t}</li>`).join('')}
+      </ul>
+    </div>
+  `;
+  
+  // If tie, show secondary
+  if (top.length === 1 && sorted.length > 1 && sorted[1][1] > 0) {
+    const second = categories[sorted[1][0]];
+    interpHTML += `
+      <div class="mt-4 p-4 rounded-2xl bg-gray-50">
+        <p class="text-sm text-gray-500">📌 你的次要爱语是 <strong>${second.name}</strong>（${sorted[1][1]}分）。在关系中，这两种爱语同样值得关注。</p>
+      </div>
+    `;
+  }
+  
+  document.getElementById('interpretation').innerHTML = interpHTML;
+  
+  // Confetti
+  spawnConfetti();
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  currentQ = 0;
+  answers = new Array(30).fill(null);
+  document.getElementById('resultsPage').classList.add('hidden');
+  document.getElementById('quizPage').classList.remove('hidden');
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function shareResults() {
+  const scores = { W:0, Q:0, G:0, S:0, P:0 };
+  for (let i = 0; i < 30; i++) {
+    const q = quizData[i];
+    const cat = answers[i] === 'a' ? q.a_cat : q.b_cat;
+    scores[cat]++;
+  }
+  const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
+  const lines = sorted.map(([cat, score]) => {
+    const info = categories[cat];
+    const bar = '█'.repeat(Math.round(score/2)) + '░'.repeat(15-Math.round(score/2));
+    return `${info.icon} ${info.name}: ${bar} ${score}/30`;
+  });
+  const text = `💝 我的爱的五种语言测验结果 💝\n\n${lines.join('\n')}\n\n🔗 你也来测：5lovelanguages.com`;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ 结果已复制到剪贴板！');
+  }).catch(() => {
+    prompt('📋 手动复制以下结果：', text);
+  });
+}
+
+function spawnConfetti() {
+  const colors = ['#e94d5f','#f5c675','#d99778','#60a5fa','#a78bfa','#34d399','#f472b6'];
+  for (let i = 0; i < 40; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.left = Math.random()*100 + '%';
+      el.style.top = -(Math.random()*40+10) + 'px';
+      el.style.width = (Math.random()*10+6) + 'px';
+      el.style.height = (Math.random()*14+6) + 'px';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+      el.style.animationDuration = (Math.random()*2+1.5) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    }, i*30);
+  }
+}
+</script>
+</body>
+</html>
