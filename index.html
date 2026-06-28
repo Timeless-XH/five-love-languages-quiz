@@ -59,6 +59,9 @@ tailwind.config = {
     <button onclick="startQuiz()" class="px-10 py-4 bg-gradient-to-r from-love-500 to-love-600 text-white text-lg font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all">
       开始测验 ✨
     </button>
+    <div id="savedResultHint" class="hidden mt-4">
+      <button onclick="loadSavedQuiz()" class="text-sm text-love-500 underline hover:text-love-600">📋 查看上次结果</button>
+    </div>
   </div>
 </section>
 
@@ -254,6 +257,37 @@ const categories = {
 // ===== STATE =====
 let currentQ = 0;
 let answers = new Array(10).fill(null);
+const STORAGE_KEY = 'love_languages_quiz_result';
+
+// ===== PAGE INIT — check for saved results =====
+(function init() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.answers && data.answers.length === 10) {
+        document.getElementById('savedResultHint').classList.remove('hidden');
+      }
+    } catch(e) {}
+  }
+})();
+
+function loadSavedQuiz() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    if (data.answers && data.answers.length === 10) {
+      answers = data.answers;
+      currentQ = 9;
+      document.getElementById('introPage').classList.add('hidden');
+      document.getElementById('quizPage').classList.add('hidden');
+      document.getElementById('resultsPage').classList.remove('hidden');
+      renderSavedResults();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  } catch(e) {}
+}
 
 // ===== FUNCTIONS =====
 function startQuiz() {
@@ -346,6 +380,22 @@ function showResults() {
   // Count selections per option
   const scores = { A:0, B:0, C:0, D:0, E:0 };
   answers.forEach(a => { scores[a]++; });
+
+  // Save to localStorage
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    answers: [...answers],
+    timestamp: new Date().toISOString()
+  }));
+
+  renderSavedResults();
+
+  spawnConfetti();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderSavedResults() {
+  const scores = { A:0, B:0, C:0, D:0, E:0 };
+  answers.forEach(a => { scores[a]++; });
   
   // Sort
   const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
@@ -431,12 +481,11 @@ function showResults() {
   
   tableHTML += '</tbody></table></div>';
   document.getElementById('detailTable').innerHTML = tableHTML;
-  
-  spawnConfetti();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restartQuiz() {
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('savedResultHint').classList.add('hidden');
   currentQ = 0;
   answers = new Array(10).fill(null);
   document.getElementById('resultsPage').classList.add('hidden');
