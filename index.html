@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>爱的五种语言 · 互动测验</title>
+<title>爱的五种语言 · 互动测验（Winnie简版）</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -12,52 +12,51 @@ tailwind.config = {
       colors: {
         love: { 50:'#fff5f6', 100:'#ffe0e4', 200:'#ffc2c9', 300:'#ff939e', 400:'#ff5e70', 500:'#e94d5f', 600:'#c93a4b', 700:'#a62d3d', 800:'#8a2735', 900:'#722533' },
         gold: { 50:'#fef9ef', 100:'#fdf0d5', 200:'#faddaa', 300:'#f5c675', 400:'#efa83e', 500:'#e79217', 600:'#cc760d', 700:'#a55c0e', 800:'#854914', 900:'#6e3c12' },
-        warm: { 50:'#fdf8f6', 100:'#f9ede7', 200:'#f2d9cd', 300:'#e7bda8', 400:'#d99778', 500:'#c87554', 600:'#b45d40', 700:'#964a33', 800:'#7d3f2d', 900:'#683628' },
       },
-      fontFamily: { sans: ['"SF Pro Display"','"PingFang SC"','"Noto Sans SC"','"Helvetica Neue"','Arial','sans-serif'] }
     }
   }
 }
 </script>
 <style>
-  .quiz-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
-  .option-btn { transition: all 0.2s ease; }
+  .option-btn { transition: all 0.2s ease; cursor: pointer; }
   .option-btn:hover { transform: translateX(6px); }
-  .option-btn.selected { border-color: #e94d5f; background: #fff5f6; box-shadow: 0 0 0 3px rgba(233,77,95,0.15); }
+  .option-btn.selected { border-color: #e94d5f !important; background: #fff5f6 !important; box-shadow: 0 0 0 3px rgba(233,77,95,0.15); }
+  .option-btn.selected .badge { background: #e94d5f !important; color: #fff !important; }
   .bar-fill { transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
-  .fade-in { animation: fadeIn 0.5s ease; }
+  .fade-in { animation: fadeIn 0.4s ease; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
   .slide-up { animation: slideUp 0.6s cubic-bezier(0.23,1,0.32,1); }
   @keyframes slideUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
   .heart-beat { animation: heartBeat 1.2s ease-in-out infinite; }
   @keyframes heartBeat { 0%,100% { transform:scale(1); } 14% { transform:scale(1.12); } 28% { transform:scale(1); } 42% { transform:scale(1.12); } 56% { transform:scale(1); } }
-  .confetti { position:fixed; pointer-events:none; animation:confettiFall 2s ease-out forwards; }
+  .confetti { position:fixed; pointer-events:none; animation:confettiFall 2s ease-out forwards; z-index:9999; }
   @keyframes confettiFall { 0% { opacity:1; transform:translateY(-100px) rotate(0deg); } 100% { opacity:0; transform:translateY(100vh) rotate(720deg); } }
   body { background: linear-gradient(135deg, #fdf2f4 0%, #fef9ef 30%, #fdf8f6 60%, #fdf2f4 100%); background-attachment: fixed; }
+  .badge { transition: all 0.2s ease; }
 </style>
 </head>
 <body class="min-h-screen font-sans antialiased text-gray-800">
 
 <!-- ===== INTRO PAGE ===== -->
 <section id="introPage" class="min-h-screen flex items-center justify-center px-4 py-12">
-  <div class="max-w-2xl w-full text-center">
+  <div class="max-w-xl w-full text-center">
     <div class="heart-beat text-6xl mb-6">💝</div>
-    <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-love-500 to-warm-500 bg-clip-text text-transparent">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-love-500 to-gold-500 bg-clip-text text-transparent">
       爱的五种语言
     </h1>
-    <p class="text-lg md:text-xl text-gray-600 mb-2">互动测验 · 发现你的爱语</p>
-    <div class="w-20 h-1 bg-gradient-to-r from-love-400 to-gold-400 mx-auto my-6 rounded-full"></div>
+    <p class="text-lg text-gray-500 mb-2">Winnie 简版 · 互动测验</p>
+    <div class="w-16 h-1 bg-gradient-to-r from-love-400 to-gold-400 mx-auto my-6 rounded-full"></div>
     <p class="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
-      基于 Gary Chapman 博士经典理论。共 <strong>30 组</strong>题目，每组选择最贴近你的描述。<br>约需 5-8 分钟完成。
+      共 <strong>10 道题</strong>，每题选一个最符合你感觉的选项。<br>约需 2-3 分钟完成。
     </p>
-    <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <span class="px-3 py-1.5 bg-love-50 text-love-600 rounded-full text-sm font-medium">💬 肯定的言语</span>
-      <span class="px-3 py-1.5 bg-gold-50 text-gold-700 rounded-full text-sm font-medium">⏰ 精心的时刻</span>
-      <span class="px-3 py-1.5 bg-warm-50 text-warm-600 rounded-full text-sm font-medium">🎁 接受礼物</span>
-      <span class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium">🛠️ 服务的行动</span>
-      <span class="px-3 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">🤗 身体的接触</span>
+    <div class="flex flex-wrap justify-center gap-2 mb-8">
+      <span class="px-3 py-1.5 bg-love-50 text-love-600 rounded-full text-sm font-medium">A 肯定的言语</span>
+      <span class="px-3 py-1.5 bg-gold-50 text-gold-700 rounded-full text-sm font-medium">B 高质量的陪伴</span>
+      <span class="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">C 接受礼物</span>
+      <span class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-medium">D 服务的行动</span>
+      <span class="px-3 py-1.5 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">E 身体的接触</span>
     </div>
-    <button onclick="startQuiz()" class="px-10 py-4 bg-gradient-to-r from-love-500 to-love-600 text-white text-lg font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:shadow-love-300 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+    <button onclick="startQuiz()" class="px-10 py-4 bg-gradient-to-r from-love-500 to-love-600 text-white text-lg font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all">
       开始测验 ✨
     </button>
   </div>
@@ -69,27 +68,28 @@ tailwind.config = {
     <!-- Header -->
     <div class="flex items-center justify-between mb-2">
       <button onclick="prevQuestion()" id="prevBtn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm hover:shadow-md transition-all text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed">←</button>
-      <div class="text-sm font-medium text-gray-400"><span id="qNum">1</span> / 30</div>
+      <div class="text-sm font-medium text-gray-400"><span id="qNum">1</span> / 10</div>
       <div class="w-10 h-10"></div>
     </div>
     <!-- Progress bar -->
     <div class="w-full h-2 bg-gray-200 rounded-full mb-8 overflow-hidden">
-      <div id="progressBar" class="h-full bg-gradient-to-r from-love-400 to-love-500 rounded-full transition-all duration-500" style="width:3.3%"></div>
+      <div id="progressBar" class="h-full bg-gradient-to-r from-love-400 to-love-500 rounded-full transition-all duration-500" style="width:10%"></div>
     </div>
     <!-- Question card -->
-    <div id="questionCard" class="quiz-card bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 md:p-8 mb-6 fade-in">
-      <div class="flex items-center gap-2 mb-6">
+    <div id="questionCard" class="bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 md:p-8 mb-6 fade-in">
+      <div class="flex items-center gap-2 mb-4">
         <span class="w-8 h-8 rounded-full bg-love-100 text-love-500 flex items-center justify-center text-sm font-bold" id="qBadge">1</span>
-        <span class="text-sm text-gray-400 font-medium">选择更贴近你的描述</span>
+        <span class="text-sm text-gray-400 font-medium">选出你最希望别人对你做的那一个</span>
       </div>
-      <div id="optionsContainer" class="space-y-4"></div>
+      <h3 id="questionTitle" class="text-lg font-semibold text-gray-800 mb-5 leading-relaxed"></h3>
+      <div id="optionsContainer" class="space-y-3"></div>
     </div>
     <!-- Navigation -->
     <div class="flex justify-end">
-      <button onclick="nextQuestion()" id="nextBtn" class="px-8 py-3 bg-gradient-to-r from-love-500 to-love-600 text-white font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:shadow-love-300 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none transition-all">
+      <button onclick="nextQuestion()" id="nextBtn" class="px-8 py-3 bg-gradient-to-r from-love-500 to-love-600 text-white font-semibold rounded-2xl shadow-lg shadow-love-200 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed transition-all">
         下一题 →
       </button>
-      <button onclick="showResults()" id="submitBtn" class="hidden px-8 py-3 bg-gradient-to-r from-gold-400 to-gold-500 text-white font-semibold rounded-2xl shadow-lg shadow-gold-200 hover:shadow-xl hover:shadow-gold-300 hover:-translate-y-0.5 transition-all">
+      <button onclick="showResults()" id="submitBtn" class="hidden px-8 py-3 bg-gradient-to-r from-gold-400 to-gold-500 text-white font-semibold rounded-2xl shadow-lg shadow-gold-200 hover:shadow-xl hover:-translate-y-0.5 transition-all">
         查看结果 🎉
       </button>
     </div>
@@ -102,7 +102,7 @@ tailwind.config = {
     <div class="text-center mb-10 slide-up">
       <div class="text-5xl mb-4">💝</div>
       <h2 class="text-3xl md:text-4xl font-bold mb-2 text-gray-800">你的爱的语言</h2>
-      <p class="text-gray-500">以下是你的爱语分布</p>
+      <p class="text-gray-500">以下是你的爱语分布（A-E 对应五大爱语）</p>
     </div>
     
     <!-- Score bars -->
@@ -110,6 +110,9 @@ tailwind.config = {
     
     <!-- Interpretation -->
     <div id="interpretation" class="bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 md:p-8 mb-6 slide-up"></div>
+    
+    <!-- Detail table -->
+    <div id="detailTable" class="bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 md:p-8 mb-6 slide-up"></div>
     
     <!-- Actions -->
     <div class="flex flex-wrap gap-3 justify-center slide-up">
@@ -124,53 +127,133 @@ tailwind.config = {
 </section>
 
 <script>
-// ===== QUIZ DATA =====
-// Categories: W=Words, Q=QualityTime, G=Gifts, S=Service, P=PhysicalTouch
+// ===== QUIZ DATA — From "Winnie 简版" photos =====
+// Options: A=肯定的言语, B=高质量的陪伴, C=接受礼物, D=服务的行动, E=身体的接触
 const quizData = [
-  { a:"伴侣说\"我爱你\"", b:"伴侣给我一个拥抱", a_cat:"W", b_cat:"P" },
-  { a:"伴侣帮我做家务", b:"伴侣送我礼物", a_cat:"S", b_cat:"G" },
-  { a:"和伴侣一起散步", b:"伴侣搂着我的肩膀", a_cat:"Q", b_cat:"P" },
-  { a:"伴侣送我意想不到的礼物", b:"伴侣对我说鼓励的话", a_cat:"G", b_cat:"W" },
-  { a:"伴侣帮我按摩肩膀", b:"伴侣花时间陪我", a_cat:"P", b_cat:"Q" },
-  { a:"伴侣帮我处理琐事", b:"伴侣拉着我的手", a_cat:"S", b_cat:"P" },
-  { a:"伴侣送我一份特别的礼物", b:"伴侣对我说\"你真棒\"", a_cat:"G", b_cat:"W" },
-  { a:"和伴侣依偎在沙发上", b:"伴侣为我做一顿饭", a_cat:"P", b_cat:"S" },
-  { a:"伴侣写给我的情书", b:"伴侣计划一次约会", a_cat:"W", b_cat:"Q" },
-  { a:"伴侣帮我洗车或修东西", b:"伴侣送我花", a_cat:"S", b_cat:"G" },
-  { a:"伴侣专注地听我说话", b:"伴侣经常触碰我", a_cat:"Q", b_cat:"P" },
-  { a:"伴侣在朋友面前称赞我", b:"伴侣分担我的工作", a_cat:"W", b_cat:"S" },
-  { a:"伴侣精心挑选的礼物", b:"伴侣安排只有我们俩的时间", a_cat:"G", b_cat:"Q" },
-  { a:"伴侣给我一个长长的拥抱", b:"伴侣对我说感激的话", a_cat:"P", b_cat:"W" },
-  { a:"伴侣帮我完成一个项目", b:"伴侣陪我逛街或散步", a_cat:"S", b_cat:"Q" },
-  { a:"伴侣送我珠宝或饰品", b:"伴侣握着我的手", a_cat:"G", b_cat:"P" },
-  { a:"伴侣对我说\"我相信你\"", b:"伴侣帮我准备早餐", a_cat:"W", b_cat:"S" },
-  { a:"伴侣放下手机专注陪我", b:"伴侣给我一个吻", a_cat:"Q", b_cat:"P" },
-  { a:"伴侣送我实用的礼物", b:"伴侣说\"我需要你\"", a_cat:"G", b_cat:"W" },
-  { a:"伴侣修理家里的东西", b:"伴侣计划周末出游", a_cat:"S", b_cat:"Q" },
-  { a:"伴侣抚摸我的头发", b:"伴侣给我写一张便条", a_cat:"P", b_cat:"W" },
-  { a:"伴侣帮我跑腿办事", b:"伴侣送我惊喜蛋糕", a_cat:"S", b_cat:"G" },
-  { a:"和伴侣深入聊天", b:"伴侣从背后抱我", a_cat:"Q", b_cat:"P" },
-  { a:"伴侣当众表扬我", b:"伴侣帮我打扫房间", a_cat:"W", b_cat:"S" },
-  { a:"伴侣送我一直想要的东西", b:"伴侣陪我看电影", a_cat:"G", b_cat:"Q" },
-  { a:"伴侣坐得很近", b:"伴侣对我说\"谢谢你\"", a_cat:"P", b_cat:"W" },
-  { a:"伴侣主动帮助我", b:"伴侣用心安排纪念日", a_cat:"S", b_cat:"Q" },
-  { a:"伴侣出差带回礼物", b:"伴侣见面时拥抱我", a_cat:"G", b_cat:"P" },
-  { a:"伴侣说\"你很特别\"", b:"伴侣给我倒一杯水", a_cat:"W", b_cat:"S" },
-  { a:"伴侣和我一起做我喜欢的事", b:"伴侣送我一张卡片", a_cat:"Q", b_cat:"G" },
+  {
+    title: "当我感觉被爱时，是因为对方：",
+    options: {
+      A: "跟我说"我很重要"或"我很棒"",
+      B: "和我安静地共度时光",
+      C: "给我一个贴心的小礼物",
+      D: "主动帮我完成一件事",
+      E: "拥抱我或拉着我的手"
+    }
+  },
+  {
+    title: "我更感动于：",
+    options: {
+      A: "对方给我写一张暖心卡片",
+      B: "一起出去散步或旅行",
+      C: "对方给我准备一个特别的惊喜礼物",
+      D: "对方帮我解决一项我不喜欢做的家务",
+      E: "对方在众人面前自然地搂住我"
+    }
+  },
+  {
+    title: "我更希望：",
+    options: {
+      A: "被表扬和鼓励",
+      B: "有人专心听我讲话，不分心看手机",
+      C: "节日或非节日都有人送我小东西",
+      D: "对方主动承担一些我的负担",
+      E: "频繁地有身体接触，比如牵手、依靠"
+    }
+  },
+  {
+    title: "如果我难过时，我最希望对方：",
+    options: {
+      A: "安慰我并用语言鼓励我",
+      B: "安静地陪我坐着，哪怕不说话",
+      C: "买个我喜欢的东西安慰我",
+      D: "替我处理掉一件我正烦的事情",
+      E: "给我一个长长的抱抱"
+    }
+  },
+  {
+    title: "我觉得爱一个人最重要的是：",
+    options: {
+      A: "说出你在乎他/她",
+      B: "花时间陪伴他/她",
+      C: "给对方一些体现心意的小物",
+      D: "做实事帮对方分担",
+      E: "经常亲昵互动"
+    }
+  },
+  {
+    title: "如果我生日，最想收到的礼物是：",
+    options: {
+      A: "一段写得走心的语音或纸条",
+      B: "对方安排好时间专门陪我过一天",
+      C: "一个我心心念念的礼物",
+      D: "对方帮我完成一个愿望清单里的任务",
+      E: "一个温暖的拥抱和亲吻"
+    }
+  },
+  {
+    title: "我更希望每天有：",
+    options: {
+      A: "甜蜜的夸奖或鼓励",
+      B: "有意义的共处时光",
+      C: "惊喜的小礼物或纪念物",
+      D: "有人帮我做小事，比如倒垃圾",
+      E: "自然的牵手、靠肩、拥抱"
+    }
+  },
+  {
+    title: "当我谈恋爱时，我会觉得：",
+    options: {
+      A: "对方常说他/她有多爱我让我觉得幸福",
+      B: "和对方一起做什么都很开心",
+      C: "喜欢被记得、被送礼物",
+      D: "我特别感激对方帮我完成任何一件小事",
+      E: "我们的身体接触让我觉得很亲密"
+    }
+  },
+  {
+    title: "如果对方忙于工作，我最希望他/她：",
+    options: {
+      A: "抽空发一段鼓励我的话",
+      B: "即使再忙也安排一点时间专心陪我",
+      C: "下班后给我带一杯我爱喝的饮料",
+      D: "忙完之后第一时间帮我处理点事",
+      E: "回来之后紧紧地抱我一下"
+    }
+  },
+  {
+    title: "如果和我关系最好的人远在他方，我最希望他/她：",
+    options: {
+      A: "发来一些温暖贴心的话",
+      B: "安排好时间专门视频聊聊天",
+      C: "快递一个让我开心的礼物",
+      D: "远程帮我出点主意/解决问题",
+      E: "回来第一件事是给我一个大大的拥抱"
+    }
+  }
 ];
 
-// Category info
+// Category info — matching the photo's mapping
 const categories = {
-  W: { name:"肯定的言语", icon:"💬", color:"love", desc:"你喜欢听到肯定、赞美和鼓励的话语。言语对你来说是爱的强有力表达——一句\"我爱你\"、一张便条、或真诚的称赞都能让你的心充满温暖。", tips:["多说\"我爱你\"和\"谢谢你\"","写便条、发甜蜜短信","在他人面前称赞对方","避免批评和讽刺"] },
-  Q: { name:"精心的时刻", icon:"⏰", color:"gold", desc:"你重视一起度过的专注时光。当你和伴侣全神贯注地相处——不被手机打扰的聊天、一起散步、或计划好的约会——你感受到深深的爱与连接。", tips:["放下手机，专注倾听","计划定期约会","一起散步或旅行","创造只属于两人的仪式"] },
-  G: { name:"接受礼物", icon:"🎁", color:"warm", desc:"礼物在你心中代表着爱与思念。重要的不是价格，而是那份心意——伴侣为你挑选礼物的用心，让你感受到被珍视。", tips:["不一定要贵重，重在心意","出差或逛街时想到对方","在特别的日子送礼物","亲手制作的礼物更珍贵"] },
-  S: { name:"服务的行动", icon:"🛠️", color:"blue", desc:"你从行动中感受爱。当伴侣帮你做家务、修东西、为你跑腿——这些实际的行动比千言万语更能表达爱。", tips:["主动分担家务","帮对方处理琐事","用行动代替说\"我爱你\"","发现对方需要并悄悄去做"] },
-  P: { name:"身体的接触", icon:"🤗", color:"purple", desc:"身体接触是你的主要爱语。拥抱、牵手、亲吻——这些肢体接触让你感到安全和被爱。", tips:["多拥抱、牵手、亲吻","散步时挽着手","坐在身边而非对面","按摩肩膀或背部"] },
+  A: { name:"肯定的言语", icon:"💬", color:"love", bg:"bg-red-100", bar:"from-red-400 to-red-300",
+       desc:"你喜欢听到肯定、赞美和鼓励的话语。言语对你来说是爱的强有力表达——一句\"你很棒\"、一张暖心卡片、或真诚的称赞都能让你的心充满温暖。",
+       tips:["多说肯定和鼓励的话","写便条、发甜蜜语音","在他人面前称赞对方","避免批评和指责"] },
+  B: { name:"高质量的陪伴", icon:"⏰", color:"gold", bg:"bg-amber-100", bar:"from-amber-500 to-amber-400",
+       desc:"你重视一起度过的专注时光。当你和对方全神贯注地相处——不被手机打扰的聊天、一起散步旅行、或计划好的约会——你感受到深深的爱与连接。",
+       tips:["放下手机，专注倾听","计划定期约会和旅行","一起散步或安静共处","创造只属于两人的仪式"] },
+  C: { name:"接受礼物", icon:"🎁", color:"warm", bg:"bg-orange-100", bar:"from-orange-500 to-orange-400",
+       desc:"礼物在你心中代表着爱与思念。重要的不是价格，而是那份心意——对方为你挑选礼物的用心，让你感受到被珍视。",
+       tips:["不一定要贵重，重在心意","出差或逛街时想到对方","节日和日常都可以送","亲手制作更显珍贵"] },
+  D: { name:"服务的行动", icon:"🛠️", color:"blue", bg:"bg-blue-100", bar:"from-blue-500 to-blue-400",
+       desc:"你从行动中感受爱。当对方帮你做家务、处理琐事、分担负担——这些实际的行动比千言万语更能表达爱。",
+       tips:["主动分担家务和琐事","帮对方处理烦心事","用行动代替言语","发现对方需要并悄悄去做"] },
+  E: { name:"身体的接触", icon:"🤗", color:"purple", bg:"bg-purple-100", bar:"from-purple-500 to-purple-400",
+       desc:"身体接触是你的主要爱语。拥抱、牵手、亲吻——这些肢体接触让你感到安全和被爱。",
+       tips:["多拥抱、牵手、亲吻","散步时挽着手","坐在身边而非对面","用肢体语言表达爱意"] },
 };
 
 // ===== STATE =====
 let currentQ = 0;
-let answers = new Array(30).fill(null);
+let answers = new Array(10).fill(null);
 
 // ===== FUNCTIONS =====
 function startQuiz() {
@@ -178,45 +261,48 @@ function startQuiz() {
   document.getElementById('quizPage').classList.remove('hidden');
   document.getElementById('resultsPage').classList.add('hidden');
   currentQ = 0;
-  answers = new Array(30).fill(null);
+  answers = new Array(10).fill(null);
   renderQuestion();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+const optionLabels = ['A','B','C','D','E'];
+const optionBadgeColors = {
+  A: 'bg-red-50 text-red-500',
+  B: 'bg-amber-50 text-amber-600',
+  C: 'bg-orange-50 text-orange-600',
+  D: 'bg-blue-50 text-blue-600',
+  E: 'bg-purple-50 text-purple-600',
+};
 
 function renderQuestion() {
   const q = quizData[currentQ];
   document.getElementById('qNum').textContent = currentQ + 1;
   document.getElementById('qBadge').textContent = currentQ + 1;
-  document.getElementById('progressBar').style.width = ((currentQ + 1) / 30 * 100) + '%';
-  
+  document.getElementById('questionTitle').textContent = q.title;
+  document.getElementById('progressBar').style.width = ((currentQ + 1) / 10 * 100) + '%';
   document.getElementById('prevBtn').disabled = currentQ === 0;
   
-  const container = document.getElementById('optionsContainer');
   const sel = answers[currentQ];
+  const container = document.getElementById('optionsContainer');
   
-  container.innerHTML = `
-    <button onclick="selectAnswer('a')" class="option-btn w-full text-left p-5 rounded-2xl border-2 border-gray-200 bg-white hover:border-love-300 ${sel==='a'?'selected':''}">
-      <div class="flex items-start gap-4">
-        <span class="flex-shrink-0 w-10 h-10 rounded-xl bg-love-50 text-love-500 flex items-center justify-center font-bold text-sm ${sel==='a'?'!bg-love-500 !text-white':''}">A</span>
-        <div>
-          <p class="text-gray-800 font-medium leading-relaxed">${q.a}</p>
+  let html = '';
+  optionLabels.forEach(label => {
+    const isSel = sel === label;
+    const badgeCls = optionBadgeColors[label];
+    html += `
+      <button onclick="selectAnswer('${label}')" class="option-btn w-full text-left p-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-love-300 ${isSel?'selected':''}">
+        <div class="flex items-start gap-3">
+          <span class="badge flex-shrink-0 w-9 h-9 rounded-xl ${badgeCls} flex items-center justify-center font-bold text-sm ${isSel?'!bg-love-500 !text-white':''}">${label}</span>
+          <p class="text-gray-700 leading-relaxed pt-1">${q.options[label]}</p>
         </div>
-      </div>
-    </button>
-    <button onclick="selectAnswer('b')" class="option-btn w-full text-left p-5 rounded-2xl border-2 border-gray-200 bg-white hover:border-love-300 ${sel==='b'?'selected':''}">
-      <div class="flex items-start gap-4">
-        <span class="flex-shrink-0 w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center font-bold text-sm ${sel==='b'?'!bg-gold-500 !text-white':''}">B</span>
-        <div>
-          <p class="text-gray-800 font-medium leading-relaxed">${q.b}</p>
-        </div>
-      </div>
-    </button>
-  `;
+      </button>`;
+  });
+  container.innerHTML = html;
   
-  // Update nav buttons
   const nextBtn = document.getElementById('nextBtn');
   const submitBtn = document.getElementById('submitBtn');
-  if (currentQ === 29) {
+  if (currentQ === 9) {
     nextBtn.classList.add('hidden');
     submitBtn.classList.remove('hidden');
   } else {
@@ -224,7 +310,6 @@ function renderQuestion() {
     submitBtn.classList.add('hidden');
   }
   
-  // Re-trigger fade animation
   const card = document.getElementById('questionCard');
   card.classList.remove('fade-in');
   void card.offsetWidth;
@@ -237,7 +322,7 @@ function selectAnswer(choice) {
 }
 
 function nextQuestion() {
-  if (currentQ < 29) {
+  if (currentQ < 9) {
     currentQ++;
     renderQuestion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -254,61 +339,41 @@ function prevQuestion() {
 function showResults() {
   if (answers.includes(null)) {
     const unanswered = answers.map((a,i) => a===null ? i+1 : null).filter(x => x);
-    alert(`还有 ${unanswered.length} 题未回答：第 ${unanswered.slice(0,5).join(', ')}${unanswered.length>5?'...':''} 题`);
+    alert(`还有 ${unanswered.length} 题未回答：第 ${unanswered.slice(0,5).join(', ')} 题`);
     return;
   }
   
-  // Calculate scores
-  const scores = { W:0, Q:0, G:0, S:0, P:0 };
-  for (let i = 0; i < 30; i++) {
-    const q = quizData[i];
-    const cat = answers[i] === 'a' ? q.a_cat : q.b_cat;
-    scores[cat]++;
-  }
+  // Count selections per option
+  const scores = { A:0, B:0, C:0, D:0, E:0 };
+  answers.forEach(a => { scores[a]++; });
   
-  // Sort by score
+  // Sort
   const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
   const maxScore = sorted[0][1];
   
-  // Show results page
   document.getElementById('quizPage').classList.add('hidden');
   document.getElementById('resultsPage').classList.remove('hidden');
   
-  // Render bars
-  const barColors = {
-    W: 'from-red-400 to-red-300',
-    Q: 'from-amber-500 to-amber-400',
-    G: 'from-orange-500 to-orange-400',
-    S: 'from-blue-500 to-blue-400',
-    P: 'from-purple-500 to-purple-400',
-  };
-  const barBgs = {
-    W: 'bg-red-100',
-    Q: 'bg-amber-100',
-    G: 'bg-orange-100',
-    S: 'bg-blue-100',
-    P: 'bg-purple-100',
-  };
-  
+  // Score bars
   let barsHTML = '';
   sorted.forEach(([cat, score]) => {
-    const pct = Math.round(score / 30 * 100);
+    const pct = score > 0 ? Math.round(score / 10 * 100) : 0;
     const info = categories[cat];
-    const isTop = score === maxScore;
+    const isTop = score === maxScore && score > 0;
     barsHTML += `
       <div>
         <div class="flex items-center justify-between mb-1.5">
           <span class="font-semibold text-gray-700">${info.icon} ${info.name} ${isTop ? '👑' : ''}</span>
-          <span class="text-sm font-bold text-gray-500">${score} / 30</span>
+          <span class="text-sm font-bold text-gray-500">${score} / 10</span>
         </div>
-        <div class="w-full h-3 rounded-full ${barBgs[cat]} overflow-hidden">
-          <div class="bar-fill h-full rounded-full bg-gradient-to-r ${barColors[cat]}" style="width:${pct}%"></div>
+        <div class="w-full h-3 rounded-full ${info.bg} overflow-hidden">
+          <div class="bar-fill h-full rounded-full bg-gradient-to-r ${info.bar}" style="width:${pct}%"></div>
         </div>
       </div>`;
   });
   document.getElementById('scoreBars').innerHTML = barsHTML;
   
-  // Trigger bar animations after render
+  // Trigger bar animations
   setTimeout(() => {
     document.querySelectorAll('.bar-fill').forEach(bar => {
       const w = bar.style.width;
@@ -318,44 +383,62 @@ function showResults() {
     });
   }, 100);
   
-  // Top love languages
-  const top = sorted.filter(([,s]) => s === maxScore);
-  const topInfo = categories[top[0][0]];
+  // Top love language
+  const top = sorted.filter(([,s]) => s === maxScore && s > 0);
+  const topInfo = top.length > 0 ? categories[top[0][0]] : null;
   const topNames = top.map(([c]) => categories[c].name).join(' 和 ');
   
-  // Interpretation
-  let interpHTML = `
-    <h3 class="text-xl font-bold mb-4">📖 你的主要爱语：${topNames}</h3>
-    <p class="text-gray-600 leading-relaxed mb-4">${topInfo.desc}</p>
-    <div class="bg-${topInfo.color}-50 rounded-2xl p-5 mt-4">
-      <p class="font-semibold text-gray-700 mb-2">💡 给伴侣的建议：</p>
-      <ul class="space-y-2">
-        ${topInfo.tips.map(t => `<li class="flex items-start gap-2 text-gray-600"><span class="text-${topInfo.color}-500 mt-0.5">✦</span>${t}</li>`).join('')}
-      </ul>
-    </div>
-  `;
-  
-  // If tie, show secondary
-  if (top.length === 1 && sorted.length > 1 && sorted[1][1] > 0) {
-    const second = categories[sorted[1][0]];
-    interpHTML += `
-      <div class="mt-4 p-4 rounded-2xl bg-gray-50">
-        <p class="text-sm text-gray-500">📌 你的次要爱语是 <strong>${second.name}</strong>（${sorted[1][1]}分）。在关系中，这两种爱语同样值得关注。</p>
-      </div>
-    `;
+  let interpHTML = '';
+  if (topInfo) {
+    interpHTML = `
+      <h3 class="text-xl font-bold mb-4">📖 你的主要爱语：${topNames}</h3>
+      <p class="text-gray-600 leading-relaxed mb-4">${topInfo.desc}</p>
+      <div class="bg-${topInfo.color}-50 rounded-2xl p-5 mt-4">
+        <p class="font-semibold text-gray-700 mb-2">💡 建议：</p>
+        <ul class="space-y-2">
+          ${topInfo.tips.map(t => `<li class="flex items-start gap-2 text-gray-600"><span>✦</span>${t}</li>`).join('')}
+        </ul>
+      </div>`;
+    if (top.length === 1 && sorted[1][1] > 0) {
+      const second = categories[sorted[1][0]];
+      interpHTML += `
+        <div class="mt-4 p-4 rounded-2xl bg-gray-50">
+          <p class="text-sm text-gray-500">📌 你的次要爱语是 <strong>${second.name}</strong>（${sorted[1][1]}分）。在关系中，这两种爱语同样值得关注。</p>
+        </div>`;
+    }
   }
-  
   document.getElementById('interpretation').innerHTML = interpHTML;
   
-  // Confetti
-  spawnConfetti();
+  // Detail table: show which option was selected for each question
+  let tableHTML = `<h3 class="text-lg font-bold mb-4">📋 答题明细</h3>
+    <div class="overflow-x-auto"><table class="w-full text-sm">
+    <thead><tr class="border-b border-gray-200">
+      <th class="text-left py-2 pr-2 text-gray-400 w-12">#</th>
+      <th class="text-left py-2 pr-2 text-gray-400">题目</th>
+      <th class="text-center py-2 text-gray-400 w-16">选择</th>
+    </tr></thead><tbody>`;
   
+  quizData.forEach((q, i) => {
+    const ans = answers[i];
+    const info = categories[ans];
+    tableHTML += `
+      <tr class="border-b border-gray-100">
+        <td class="py-2 pr-2 text-gray-400">${i+1}</td>
+        <td class="py-2 pr-2 text-gray-700">${q.title}</td>
+        <td class="py-2 text-center"><span class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold ${optionBadgeColors[ans]}">${ans} ${info.icon}</span></td>
+      </tr>`;
+  });
+  
+  tableHTML += '</tbody></table></div>';
+  document.getElementById('detailTable').innerHTML = tableHTML;
+  
+  spawnConfetti();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restartQuiz() {
   currentQ = 0;
-  answers = new Array(30).fill(null);
+  answers = new Array(10).fill(null);
   document.getElementById('resultsPage').classList.add('hidden');
   document.getElementById('quizPage').classList.remove('hidden');
   renderQuestion();
@@ -363,19 +446,15 @@ function restartQuiz() {
 }
 
 function shareResults() {
-  const scores = { W:0, Q:0, G:0, S:0, P:0 };
-  for (let i = 0; i < 30; i++) {
-    const q = quizData[i];
-    const cat = answers[i] === 'a' ? q.a_cat : q.b_cat;
-    scores[cat]++;
-  }
+  const scores = { A:0, B:0, C:0, D:0, E:0 };
+  answers.forEach(a => { scores[a]++; });
   const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
   const lines = sorted.map(([cat, score]) => {
     const info = categories[cat];
-    const bar = '█'.repeat(Math.round(score/2)) + '░'.repeat(15-Math.round(score/2));
-    return `${info.icon} ${info.name}: ${bar} ${score}/30`;
+    const bar = '█'.repeat(score) + '░'.repeat(10-score);
+    return `${info.icon} ${info.name}: ${bar} ${score}/10`;
   });
-  const text = `💝 我的爱的五种语言测验结果 💝\n\n${lines.join('\n')}\n\n🔗 你也来测：5lovelanguages.com`;
+  const text = `💝 我的爱的五种语言（Winnie简版）💝\n\n${lines.join('\n')}\n\n🔗 你也来测：5lovelanguages.com`;
   
   navigator.clipboard.writeText(text).then(() => {
     alert('✅ 结果已复制到剪贴板！');
@@ -385,7 +464,7 @@ function shareResults() {
 }
 
 function spawnConfetti() {
-  const colors = ['#e94d5f','#f5c675','#d99778','#60a5fa','#a78bfa','#34d399','#f472b6'];
+  const colors = ['#e94d5f','#f5c675','#f97316','#60a5fa','#a78bfa','#34d399','#f472b6'];
   for (let i = 0; i < 40; i++) {
     setTimeout(() => {
       const el = document.createElement('div');
